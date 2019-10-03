@@ -1,0 +1,4 @@
+ docker-machine create -d virtualbox carsapp-machine
+ docker-machine env carsapp-machine
+ eval $(docker-machine env carsapp-machine)
+ docker-compose up

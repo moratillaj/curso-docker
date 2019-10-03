@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  docker-mysql:
+    image: mysql:latest
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+  cars-api:
+    build:
+      context: "."
+      dockerfile: "./Dockerfile"
+    restart: always
+    depends_on:
+      - docker-mysql
+    ports:
+      - 8080:8080
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
